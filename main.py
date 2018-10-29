@@ -5,7 +5,7 @@ from game import *
 def main():
     game = Game()
     game.play()
-    game.printStats()
+    # game.printStats()
         
 if __name__  == "__main__":
     main()

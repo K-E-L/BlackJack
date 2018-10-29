@@ -7,12 +7,14 @@ class Card:
         self.name = name
         self.value = value
 
+    def printCard(self):
+        print(self.deck, self.suite, self.name, self.value)
+
 class Shoe:
     deck_count = 0
     cards = []
-    
-    def __init__(self):
-        self.deck_count = int(input("Enter how many decks are in the shoe: "))
+
+    def setShoe(self):
         for numSuite in range(4):
             if (numSuite == 0):
                 tempSuite = 'C'
@@ -35,6 +37,14 @@ class Shoe:
                     else:
                         card = Card(numDeck, tempSuite, numVal+1, numVal+1)
                     self.cards.append(card)
+    
+    def __init__(self):
+        # self.deck_count = int(input("Enter how many decks are in the shoe: "))
+        
+        # playing with a 2 deck shoe
+        self.deck_count = 2
+        self.setShoe()
+        self.shuffleCards()
 
     def printCards(self):
         for card in self.cards:
@@ -44,18 +54,14 @@ class Shoe:
         random.shuffle(self.cards)
 
     def dealCard(self):
-        return self.cards.pop()
+        if len(self.cards) == 0:
+            print("Shoe is out.. creating and shuffling new shoe")
+            self.setShoe()
+            self.shuffleCards()
+            return self.cards.pop()
+        else:
+            return self.cards.pop()
 
     def isEmpty(self):
         if not self.cards:
             return True
-
-class Garbage:
-    cards = []
-
-    def addCard(self, card):
-        self.cards.append(card)
-        
-    def printCards(self):
-        for card in self.cards:
-            print(card.deck, card.suite, card.name, card.value)
