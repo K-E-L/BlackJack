@@ -42,8 +42,6 @@ def checkHard(pUser, pDealer):
             return 'D'
 
 def checkSoft(pUser, pDealer):
-    # elif pUser.value >= 13 and pDealer.hand[0].value <= 6:
-    #     return 'S'
     if pUser.value >= 19:
         return 'S'
     elif pUser.value == 18:
@@ -108,71 +106,125 @@ def checkSplit(pUser, pDealer):
         else:
             return 'P'
 
+def playDealer(pDealer, pShoe):
+    while pDealer.value < 21:
+        if pDealer.value_type == 'H':
+            # H 17+
+            if pDealer.value >= 17:
+                break
+            else:
+                pass
+        else:
+            # standing on Soft 17
+            # S 17+
+            if pDealer.value >= 17:
+                break
+            else:
+                pass
+        pDealer.hitHand(pShoe.dealCard())
+        
+    if pDealer.value > 21:
+        return 1
+    else:
+        return 0
+
+def playTestHand(pUser, pDealer, pShoe):
+    if pUser.value_type == 'S':
+        # check for black jack
+        if pUser.value == 21 :
+            return 'Bj'
+
+    else:
+        # check for surrender
+        choice = checkHard(pUser, pDealer)
+        if choice == 'U':
+            return 'Su'
+        elif choice == 'D':
+            pUser.hitHand(pShoe.dealCard())
+            return 'D'
+
+    if pUser.value_type == 'H':
+        choice = checkHard(pUser, pDealer)
+    else:
+        choice = checkSoft(pUser, pDealer)
+
+    # currently if not surrender, hit instead
+    if choice == 'U' or choice == 'D':
+        choice = 'H'
+            
+    return choice
+    
 def playHand(pUser, pDealer, pShoe):
-    # while pUser.value < 21:
+    if pUser.value_type == 'S':
+        # check for black jack
+        if pUser.value == 21 :
+            return 'Bj'
+
+    else:
+        # check for surrender
+        choice = checkHard(pUser, pDealer)
+        if choice == 'U':
+            return 'Su'
+        elif choice == 'D':
+            pUser.hitHand(pShoe.dealCard())
+            return 'D'
+
     while pUser.value < 21:
         if pUser.value_type == 'H':
             choice = checkHard(pUser, pDealer)
         else:
             choice = checkSoft(pUser, pDealer)
 
-        print("User chose to:", choice)
-
-        if choice == 'S' or choice == 'D' or choice == 'U':
+        # currently if not surrender, hit instead
+        if choice == 'U' or choice == 'D':
+            choice = 'H'
+            
+        if choice == 'S':
             break
         
         if choice == 'H':
             pUser.hitHand(pShoe.dealCard())
 
-def playBasic(pUser, pDealer, pShoe):
-    # haven't added surrenders yet
-    first_hand = True
-    # haven't done splits yet
-
-    # check for black jack
-    if pUser.value == 21 and pUser.value_type == 'S':
-        print("User blackjack")
-        return 'Bj'
-
-    # check for surrender
-    choice = checkHard(pUser, pDealer)
-    if choice == 'U':
-        return 'Su'
-
-    # check for split
-    if pUser.hand[0].value == pUser.hand[1].value:
-        choice = checkSplit(pUser, pDealer)
-        print("User chose to--------------------:", choice)
-
-        if choice == 'P':
-            # adjust for first hand
-            card_hold = pUser.hand.pop()
-            pUser.hitHand(pShoe.dealCard())
-            print("First split cards are..")
-            pDealer.printDealerUp()
-            pUser.printHand("user")
-            playHand(pUser, pDealer, pShoe)
-
-            # calculate and collect for first hand
-            # cannot calculate for now
-            # won = self.calculateGame(pDealer.value, pUser.value)
-            # self.calculateBet(won)
-            pDealer.collectHandCards()
-            pUser.collectHandCards()
-
-            # adjust for second hand
-            print("Second split cards are..")
-            pDealer.dealHand(pShoe.dealCard(), pShoe.dealCard())
-            pUser.hitHand(card_hold)
-            pUser.hitHand(pShoe.dealCard())
-            pDealer.printDealerUp()
-            pUser.printHand("user")
-            playHand(pUser, pDealer, pShoe)
-        
-
-    else:
-        playHand(pUser, pDealer, pShoe)
-        
     if pUser.value > 21:
-        print("User busted")
-        return 'Bu'
+        choice = 'Bu'
+    
+    return choice
+
+def playSplit(pUser, pDealer, pShoe):
+    # adjust for first hand
+    pUser.hitHand(pShoe.dealCard())
+    print("First split cards are..")
+    pUser.printHand()
+    return playHand(pUser, pDealer, pShoe)            
+        
+# calculate and collect for first hand
+# cannot calculate for now
+def playSplit1(pUser, pDealer, pShoe, pCard_Hold):
+    # adjust for second hand
+    print("Second split cards are..")
+    pUser.hitHand(pCard_Hold)
+    pUser.hitHand(pShoe.dealCard())
+    pUser.printHand()
+    return playHand(pUser, pDealer, pShoe)
+
+def playTestBasic(pUser, pDealer, pShoe):
+    # check for split
+    # check for 11 becuase two aces will be a S12 and not H22
+    if pUser.hand[0].value == pUser.hand[1].value or pUser.hand[0].value == 11:
+        choice = checkSplit(pUser, pDealer)
+        # print("User chose to--------------------:", choice)
+        if choice == 'P':
+            return 'Sp'
+
+    return playTestHand(pUser, pDealer, pShoe)
+
+def playBasic(pUser, pDealer, pShoe):
+    # check for split
+    # check for 11 becuase two aces will be a S12 and not H22
+    if pUser.hand[0].value == pUser.hand[1].value or pUser.hand[0].value == 11:
+        choice = checkSplit(pUser, pDealer)
+        # print("User chose to--------------------:", choice)
+        if choice == 'P':
+            return 'Sp'
+
+    return playHand(pUser, pDealer, pShoe)

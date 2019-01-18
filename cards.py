@@ -46,6 +46,9 @@ class Shoe:
         self.setShoe()
         self.shuffleCards()
 
+    def createCard(self, pValue):
+        return Card(0, '?', '?', pValue)
+
     def printCards(self):
         for card in self.cards:
             print(card.deck, card.suite, card.name, card.value)

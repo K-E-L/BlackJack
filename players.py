@@ -1,7 +1,8 @@
 from cards import *
 
 class Player:
-    def __init__(self):
+    def __init__(self, pName):
+        self.name = pName
         self.hand = []
         self.value = 0
         self.value_type = ''
@@ -10,21 +11,12 @@ class Player:
         
     def checkSoftValue(self):
         self.value = 0
-        check = False
         # first check for aces
         # make them all 1s instead of 11s
         for card in self.hand:
-            if card.value == 1:
-                check = True
-            elif card.value == 11:
-                check = True
+            if card.value == 11:
                 card.value = 1
             self.value += card.value
-
-        # return hard value
-        if check == False:
-            self.value_type = 'H'
-            return
 
         # incement them back as necessary
         for card in self.hand:
@@ -33,32 +25,31 @@ class Player:
                     card.value += 10
                     self.value += 10
             
-        # if there are any 1s left, set to hard
-        self.value_type = 'S'
+        # if there are any 11s left, set to soft
+        self.value_type = 'H'
         for card in self.hand:
-            if card.value == 1:
-                self.value_type = 'H'
-                
-    def dealHand(self, Card1, Card2):
-        self.hand.append(Card1)
-        self.hand.append(Card2)
-
-        self.checkSoftValue()
+            if card.value == 11:
+                self.value_type = 'S'
 
     def hitHand(self, Card1):
         self.hand.append(Card1)
         self.checkSoftValue()
 
-    def printHand(self, user_name):
+    def dealHand(self, Card1, Card2):
+        self.hitHand(Card1)
+        self.hitHand(Card2)
+
+    def printHand(self):
         for card in self.hand:
             print(card.deck, card.suite, card.name, card.value)
-        print(user_name, "value:", self.value_type, self.value)
+        print(self.name, "value:", self.value_type, self.value)
 
-    def printValue(self, user_name):
-        print(user_name, "value:", self.value_type, self.value)
+    def printValue(self):
+        print(self.name, "value:", self.value_type, self.value)
 
     def printDealerUp(self):
-        print(self.hand[0].deck, self.hand[0].suite, self.hand[0].name, self.hand[0].value)
+        self.hand[0].printCard()
+        print('---------------')
         
     def collectHandCards(self):
         self.value = 0
@@ -67,6 +58,20 @@ class Player:
         while len(self.hand) != 0:
             self.hand.pop()
 
-    def setBet(self, pBet):
-        self.winnings -= pBet
+    def startBet(self, pBet):
         self.bet = pBet
+        print(self.name, "bets", self.bet)
+
+    def makeDoubleBet(self):
+        self.bet *= 2
+
+    def wins(self, pBet):
+        self.winnings += pBet
+        print(self.name, "wins", pBet)
+
+    def loses(self, pBet):
+        self.winnings -= pBet
+        print(self.name, "loses", pBet)
+        
+    def resetBet(self):
+        self.bet = 0
