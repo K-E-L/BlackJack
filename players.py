@@ -8,6 +8,7 @@ class Player:
         self.value_type = ''
         self.winnings = 0
         self.bet = 0
+        self.max_bet = 0
         
     def checkSoftValue(self):
         self.value = 0
@@ -58,10 +59,30 @@ class Player:
         while len(self.hand) != 0:
             self.hand.pop()
 
+    def updateMaxBet(self):
+        if self.bet > self.max_bet:
+            self.max_bet = self.bet
+
     def startBet(self, pBet):
         self.bet = pBet
+        self.updateMaxBet()
         print(self.name, "bets", self.bet)
 
+    # from WIRED https://www.youtube.com/watch?v=G_So72lFNIU
+    def hiLowBet(self, pTrueCount):
+        self.bet = pTrueCount - 1
+        self.updateMaxBet()
+        if self.bet <= 0:
+            self.bet = 1
+        print(self.name, "Hi-Low bets", self.bet)
+
+    def hiLowBetModified(self, pTrueCount):
+        self.bet = pTrueCount
+        self.updateMaxBet()
+        if self.bet <= 0:
+            self.bet = 1
+        print(self.name, "Hi-Low bets", self.bet)
+        
     def makeDoubleBet(self):
         self.bet *= 2
 

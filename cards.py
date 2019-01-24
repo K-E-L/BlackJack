@@ -13,6 +13,12 @@ class Card:
 class Shoe:
     deck_count = 0
     cards = []
+    running_count = 0
+    min_running_count = 0
+    max_running_count = 0
+    true_count = 0
+    min_true_count = 0
+    max_true_count = 0
 
     def setShoe(self):
         for numSuite in range(4):
@@ -56,15 +62,55 @@ class Shoe:
     def shuffleCards(self):
         random.shuffle(self.cards)
 
+    def updateRunningCount(self):
+        card = self.cards[len(self.cards) - 1]
+        if card.value >= 2 and card.value <= 6:
+            self.running_count += 1
+        elif card.value == 10 or card.value == 1:
+            self.running_count -= 1
+
+    def updateMinMaxRunningCount(self):
+        if self.running_count > self.max_running_count:
+            self.max_running_count = self.running_count
+        elif self.running_count < self.min_running_count:
+            self.min_running_count = self.running_count
+
+    def updateMinMaxTrueCount(self):
+        if self.true_count > self.max_true_count:
+            self.max_true_count = self.true_count
+        elif self.true_count < self.min_true_count:
+            self.min_true_count = self.true_count
+            
+    def decksLeftInShoe(self):
+        cards_left = len(self.cards) 
+        rounded = round((cards_left / 52) * 2) / 2
+        if rounded == 0:
+            rounded = .5
+
+        return rounded
+    
+    def updateTrueCount(self):
+        self.true_count = round(self.running_count / self.decksLeftInShoe())
+
     def dealCard(self):
         if len(self.cards) == 0:
             print("Shoe is out.. creating and shuffling new shoe")
             self.setShoe()
             self.shuffleCards()
+            self.updateMinMaxRunningCount()
+            self.updateMinMaxTrueCount()
+            self.running_count = 0
+            self.updateRunningCount()
+            self.updateTrueCount()
             return self.cards.pop()
         else:
+            self.updateRunningCount()
+            self.updateTrueCount()
+            self.updateMinMaxRunningCount()
+            self.updateMinMaxTrueCount()
             return self.cards.pop()
 
     def isEmpty(self):
         if not self.cards:
             return True
+
