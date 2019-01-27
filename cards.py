@@ -19,6 +19,10 @@ class Shoe:
     true_count = 0
     min_true_count = 0
     max_true_count = 0
+    exp_max_true_count = 0
+    cards_cut = 0
+
+    total_true_count = 0
 
     def setShoe(self):
         for numSuite in range(4):
@@ -47,8 +51,10 @@ class Shoe:
     def __init__(self):
         # self.deck_count = int(input("Enter how many decks are in the shoe: "))
         
-        # playing with a 2 deck shoe
-        self.deck_count = 2
+        # playing with a 6 deck shoe
+        self.deck_count = 6
+        # cut one deck out
+        self.cards_cut = 52
         self.setShoe()
         self.shuffleCards()
 
@@ -92,25 +98,43 @@ class Shoe:
     def updateTrueCount(self):
         self.true_count = round(self.running_count / self.decksLeftInShoe())
 
+    def updateTotalTrueCount(self):
+        self.total_true_count += self.true_count
+        
     def dealCard(self):
+        # should only happen if cards cut is 0
         if len(self.cards) == 0:
             print("Shoe is out.. creating and shuffling new shoe")
             self.setShoe()
             self.shuffleCards()
-            self.updateMinMaxRunningCount()
-            self.updateMinMaxTrueCount()
             self.running_count = 0
+            
+
             self.updateRunningCount()
             self.updateTrueCount()
+            self.updateMinMaxRunningCount()
+            self.updateMinMaxTrueCount()
+            self.updateTotalTrueCount()
             return self.cards.pop()
         else:
             self.updateRunningCount()
             self.updateTrueCount()
             self.updateMinMaxRunningCount()
             self.updateMinMaxTrueCount()
+            self.updateTotalTrueCount()
             return self.cards.pop()
 
     def isEmpty(self):
         if not self.cards:
             return True
 
+    def checkCutForShuffle(self):
+        if len(self.cards) <= self.cards_cut:
+            print("Shoe is less than or equal to cut.. creating and shuffling new shoe")
+            self.setShoe()
+            self.shuffleCards()
+            self.running_count = 0
+            self.true_count = 0
+        else:
+            # print("cards left:", len(self.cards))
+            pass

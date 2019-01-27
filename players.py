@@ -9,7 +9,10 @@ class Player:
         self.winnings = 0
         self.bet = 0
         self.max_bet = 0
-        
+        # spread of 50
+        self.spread = 50
+        self.total_bet = 0
+
     def checkSoftValue(self):
         self.value = 0
         # first check for aces
@@ -63,18 +66,40 @@ class Player:
         if self.bet > self.max_bet:
             self.max_bet = self.bet
 
+    def updateTotalBet(self):
+        self.total_bet += self.bet
+            
     def startBet(self, pBet):
         self.bet = pBet
         self.updateMaxBet()
+        self.updateTotalBet()
         print(self.name, "bets", self.bet)
 
-    # from WIRED https://www.youtube.com/watch?v=G_So72lFNIU
-    def hiLowBet(self, pTrueCount):
-        self.bet = pTrueCount - 1
-        self.updateMaxBet()
+    def forceMapToSpread(self, pShoe):
+        # bet / (experimental max bet) == spread bet / (max spread value)
+        # spread bet == (max spread value) * bet / (experimental max bet)
+
+        pShoe.exp_max_true_count = 35
+        self.bet = round((self.spread * self.bet) / pShoe.exp_max_true_count)
+
         if self.bet <= 0:
             self.bet = 1
-        print(self.name, "Hi-Low bets", self.bet)
+
+    # from WIRED https://www.youtube.com/watch?v=G_So72lFNIU
+    def hiLowBet(self, pShoe):
+        self.bet = pShoe.true_count - 1
+        
+        if self.bet <= 0:
+            self.bet = 1
+        else:
+            self.forceMapToSpread(pShoe)
+            if self.bet > self.spread:
+                self.bet = self.spread
+
+        print(self.name, "Hi-Low spread bets", self.bet)
+        self.updateMaxBet()
+        self.updateTotalBet()
+
 
     def hiLowBetModified(self, pTrueCount):
         self.bet = pTrueCount

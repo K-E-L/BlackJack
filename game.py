@@ -27,6 +27,7 @@ class Game:
             self.user.wins(1.5 * self.user.bet)
             self.user_wins += 1
             self.black_jacks += 1
+
             return 1
         if pChoice == 'Su':
             print("user surrenders")
@@ -49,7 +50,6 @@ class Game:
 
         if pDealer_Bust:
             print('dealer busted')
-            # print('choice', pChoice)
             
         if pChoice == 'D':
             self.user.makeDoubleBet()
@@ -58,6 +58,7 @@ class Game:
                 self.dealer.loses(self.user.bet)
                 self.user.wins(self.user.bet)
                 self.user_wins += 1
+
             elif self.user.value < self.dealer.value:
                 print("user doubles, and loses")
                 self.dealer.wins(self.user.bet)
@@ -73,6 +74,7 @@ class Game:
                 self.dealer.loses(self.user.bet)
                 self.user.wins(self.user.bet)
                 self.user_wins += 1
+
             elif self.user.value < self.dealer.value:
                 print("user stands, and loses")
                 self.dealer.wins(self.user.bet)
@@ -86,14 +88,29 @@ class Game:
         self.games_left = self.games_init
         while(self.games_left > 0):
             self.games_left -= 1
+            self.shoe.checkCutForShuffle()
+            
             # bet here
             # self.user.startBet(1)
-            self.user.hiLowBet(self.shoe.true_count)
+            self.user.hiLowBet(self.shoe)
 
-            # regular -- .0134 .0137 .0089
-            # hiLow   -- 
+            # max true count (6 deck shoe, 1 deck cut)  --  31 32 29 30 33 34 33 35 36 36
+            
+            # (6 deck shoe, 1 deck cut, spread of 50)
+            # average bet      -- 1.63    - Hi-Low: by simply adding 0 to the bet
+            # average winnings -- .0417   - mapping to spread 1-50 
+            # average edge     -- .0253   - setting the max at 50
 
-            # max true count (2 deck shoe)  --  20 20 21
+            # (6 deck shoe, 1 deck cut, spread of 100)
+            # average bet      -- 2.59     - Hi-Low: by simply adding 0 to the bet
+            # average winnings -- .0826    - mapping to spread 1-100
+            # average edge     -- .0318    - setting the max at 100
+
+            # (6 deck shoe, 1 deck cut, spread of 1000)
+            # average bet      -- 18.63     - Hi-Low: by simply adding 0 to the bet
+            # average winnings -- .6709     - mapping to spread 1-1000
+            # average edge     -- .036      - setting the max at 1000
+            
             
             # deal hands out
             self.dealer.dealHand(self.shoe.dealCard(), self.shoe.dealCard())
@@ -148,6 +165,7 @@ class Game:
     def printStats(self):
         print('**********************************************************')
         print('decks:', self.shoe.deck_count)
+        print('cards cut:', self.shoe.cards_cut)
         print('games:', self.games_init)
         print('blackjacks:', self.black_jacks)
         print('surrenders:', self.surrenders)
@@ -158,13 +176,12 @@ class Game:
         print('min running count', self.shoe.min_running_count)
         print('max true count', self.shoe.max_true_count)
         print('min true count', self.shoe.min_true_count)
-        if self.dealer_wins > 0:
-            print('user wins / dealer wins:', self.user_wins / self.dealer_wins)
-        print('user winnings:', self.user.winnings)
-        print('dealer winnings:', self.dealer.winnings)
+        print('average true count:', self.shoe.total_true_count / self.games_init)
         print('highest betting unit:', self.user.max_bet)
-        print('user wins per game (in betting units):', (self.user.winnings / self.games_init))
-        # print('dealer wins per game:', (self.dealer.winnings / self.games_init))
+        print('user spread:', self.user.spread)
+        print('average bet:', self.user.total_bet / self.games_init)
+        print('user betting units won per game:', self.user.winnings / self.games_init)
+        print('average user edge', ((self.user.winnings / self.games_init) / (self.user.total_bet / self.games_init)))
         print('**********************************************************')
 
         
