@@ -92,29 +92,22 @@ class Game:
             
             # bet here
             # self.user.startBet(1)
-            self.user.hiLowBet(self.shoe)
+            self.user.systemBet(self.shoe)
 
             # max true count (6 deck shoe, 1 deck cut)  --  31 32 29 30 33 34 33 35 36 36
             
             # (6 deck shoe, 1 deck cut, spread of 50)
-            # average bet      -- 1.63    - Hi-Low: by simply adding 0 to the bet
+            # average bet      -- 1.63    - Hi-Lo: by simply adding 0 to the bet
             # average winnings -- .0417   - mapping to spread 1-50 
             # average edge     -- .0253   - setting the max at 50
 
-            # (6 deck shoe, 1 deck cut, spread of 100)
-            # average bet      -- 2.59     - Hi-Low: by simply adding 0 to the bet
-            # average winnings -- .0826    - mapping to spread 1-100
-            # average edge     -- .0318    - setting the max at 100
 
-            # (6 deck shoe, 1 deck cut, spread of 1000)
-            # average bet      -- 18.63     - Hi-Low: by simply adding 0 to the bet
-            # average winnings -- .6709     - mapping to spread 1-1000
-            # average edge     -- .036      - setting the max at 1000
+            # .025985 deck estimation 0
             
             
             # deal hands out
             self.dealer.dealHand(self.shoe.dealCard(), self.shoe.dealCard())
-            if self.dealer.hand[0].value == 11 and self.dealer.hand[1].value == 10:
+            if (self.dealer.hand[0].value == 11 and self.dealer.hand[1].value == 10) or (self.dealer.hand[0].value == 10 and self.dealer.hand[1].value == 11):
                 # don't take insurance, lose instead
                 print("user doesn't take insurance and dealer blackjacks")
                 self.dealer.printHand()
@@ -172,23 +165,24 @@ class Game:
         print('blackjacks per game:', self.black_jacks / self.games_init)
         print('user wins:', self.user_wins)
         print('dealer wins:', self.dealer_wins)
-        print('max running count', self.shoe.max_running_count)
-        print('min running count', self.shoe.min_running_count)
-        print('max true count', self.shoe.max_true_count)
-        print('min true count', self.shoe.min_true_count)
-        print('average true count:', self.shoe.total_true_count / self.games_init)
+        print('max running count', self.shoe.system.max_running_count)
+        print('min running count', self.shoe.system.min_running_count)
+        print('max true count', self.shoe.system.max_true_count)
+        print('min true count', self.shoe.system.min_true_count)
+        print('average true count:', self.shoe.system.total_true_count / self.games_init)
         print('highest betting unit:', self.user.max_bet)
         print('user spread:', self.user.spread)
         print('average bet:', self.user.total_bet / self.games_init)
         print('user betting units won per game:', self.user.winnings / self.games_init)
-        print('average user edge', ((self.user.winnings / self.games_init) / (self.user.total_bet / self.games_init)))
+        if self.user.total_bet != 0:
+            print('average user edge', ((self.user.winnings / self.games_init) / (self.user.total_bet / self.games_init)))
         print('**********************************************************')
 
         
 #-------- testing functions --------------------------------------------------------------------
 
 
-    # need to update for hi-low betting 
+    # need to update for hi-lo betting 
     def testPlayOne(self):
         value = int(input("User first card value: "))
         value1 = int(input("User second card value: "))

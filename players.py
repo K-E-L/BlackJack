@@ -9,9 +9,24 @@ class Player:
         self.winnings = 0
         self.bet = 0
         self.max_bet = 0
-        # spread of 50
-        self.spread = 50
         self.total_bet = 0
+
+        # spread of 50
+        self.spread = 20
+
+        
+        # decks 6, spread 50, bet negative 0: .03
+        # decks 6, spread 50, bet negative 1: .018
+        # decks 6, spread 20, bet negative 0: .024
+        # decks 6, spread 20, bet negative 1: .
+
+        # decks 2, spread 50, bet negative 0: .041
+        # decks 2, spread 50, bet negative 1: .034
+        # decks 2, spread 20, bet negative 0: .042
+        # decks 2, spread 20, bet negative 1: .022
+
+        # betting 0 during a negative count
+        self.bet_during_negative_count = 1
 
     def checkSoftValue(self):
         self.value = 0
@@ -79,35 +94,27 @@ class Player:
         # bet / (experimental max bet) == spread bet / (max spread value)
         # spread bet == (max spread value) * bet / (experimental max bet)
 
-        pShoe.exp_max_true_count = 35
-        self.bet = round((self.spread * self.bet) / pShoe.exp_max_true_count)
+        pShoe.system.setExpMaxTrueCount(35)
+        self.bet = round((self.spread * self.bet) / pShoe.system.getExpMaxTrueCount())
 
         if self.bet <= 0:
             self.bet = 1
 
     # from WIRED https://www.youtube.com/watch?v=G_So72lFNIU
-    def hiLowBet(self, pShoe):
-        self.bet = pShoe.true_count - 1
+    def systemBet(self, pShoe):
+        self.bet = pShoe.system.getTrueCount() - 1
         
-        if self.bet <= 0:
-            self.bet = 1
+        if self.bet < 0:
+            self.bet = self.bet_during_negative_count
         else:
             self.forceMapToSpread(pShoe)
             if self.bet > self.spread:
                 self.bet = self.spread
 
-        print(self.name, "Hi-Low spread bets", self.bet)
+        print(self.name, "System spread bets", self.bet)
         self.updateMaxBet()
         self.updateTotalBet()
 
-
-    def hiLowBetModified(self, pTrueCount):
-        self.bet = pTrueCount
-        self.updateMaxBet()
-        if self.bet <= 0:
-            self.bet = 1
-        print(self.name, "Hi-Low bets", self.bet)
-        
     def makeDoubleBet(self):
         self.bet *= 2
 
