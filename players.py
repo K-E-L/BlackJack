@@ -12,21 +12,20 @@ class Player:
         self.total_bet = 0
 
         # spread of 50
-        self.spread = 20
+        self.spread = 50
 
+        # Wong Halves
+        # .01127  .02239 .04344  .0518
+
+        # Uston SS
+        # .01386  .03148 .03676  .0332
+
+        # Revere APC
+        # .01733  .03345 .04276  .0445
         
-        # decks 6, spread 50, bet negative 0: .03
-        # decks 6, spread 50, bet negative 1: .018
-        # decks 6, spread 20, bet negative 0: .024
-        # decks 6, spread 20, bet negative 1: .
-
-        # decks 2, spread 50, bet negative 0: .041
-        # decks 2, spread 50, bet negative 1: .034
-        # decks 2, spread 20, bet negative 0: .042
-        # decks 2, spread 20, bet negative 1: .022
-
+        
         # betting 0 during a negative count
-        self.bet_during_negative_count = 1
+        self.bet_during_negative_count = 0
 
     def checkSoftValue(self):
         self.value = 0

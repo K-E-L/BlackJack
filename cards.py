@@ -17,18 +17,21 @@ class Shoe:
 
         # self.deck_count = int(input("Enter how many decks are in the shoe: "))
         # playing with a 6 deck shoe
-        self.deck_count = 6
-        # self.deck_count = 2
+        # self.deck_count = 6
+        self.deck_count = 2
         
         # cut one deck out
-        self.cards_cut = 52
-        # self.cards_cut = 15
+        # self.cards_cut = 52
+        self.cards_cut = 15
 
         # deck estimation of .5 means round to half deck, 0 means don't round
         self.deck_estimation = 0
-        
+
+        # betting system
         # self.system = HiLo()
-        self.system = WongHalves()
+        # self.system = WongHalves()
+        self.system = UstonSS()
+        # self.system = RevereAPC()
         
         self.setShoe()
         self.shuffleCards()
@@ -84,10 +87,10 @@ class Shoe:
         # should only happen if cards cut is 0
         if len(self.cards) == 0:
             print("Shoe is out.. creating and shuffling new shoe")
+            # print("running count----------------", self.system.running_count)
             self.setShoe()
             self.shuffleCards()
             self.system.running_count = 0
-            
 
             self.system.updateRunningCount(self.cards)
             self.system.updateTrueCount(self.decksLeftInShoe(self.deck_estimation))
@@ -97,6 +100,7 @@ class Shoe:
             return self.cards.pop()
         else:
             self.system.updateRunningCount(self.cards)
+            # print("running count----------------", self.system.running_count)
             self.system.updateTrueCount(self.decksLeftInShoe(self.deck_estimation))
             self.system.updateMinMaxRunningCount()
             self.system.updateMinMaxTrueCount()
@@ -110,6 +114,7 @@ class Shoe:
     def checkCutForShuffle(self):
         if len(self.cards) <= self.cards_cut:
             print("Shoe is less than or equal to cut.. creating and shuffling new shoe")
+            # print("running count----------------", self.system.running_count)
             self.setShoe()
             self.shuffleCards()
             self.system.running_count = 0

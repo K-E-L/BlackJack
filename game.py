@@ -159,6 +159,8 @@ class Game:
         print('**********************************************************')
         print('decks:', self.shoe.deck_count)
         print('cards cut:', self.shoe.cards_cut)
+        print('spread:', self.user.spread)
+        print('bet negative:', self.user.bet_during_negative_count)
         print('games:', self.games_init)
         print('blackjacks:', self.black_jacks)
         print('surrenders:', self.surrenders)
@@ -171,15 +173,13 @@ class Game:
         print('min true count', self.shoe.system.min_true_count)
         print('average true count:', self.shoe.system.total_true_count / self.games_init)
         print('highest betting unit:', self.user.max_bet)
-        print('user spread:', self.user.spread)
         print('average bet:', self.user.total_bet / self.games_init)
-        print('user betting units won per game:', self.user.winnings / self.games_init)
         if self.user.total_bet != 0:
             print('average user edge', ((self.user.winnings / self.games_init) / (self.user.total_bet / self.games_init)))
         print('**********************************************************')
 
         
-#-------- testing functions --------------------------------------------------------------------
+# -------- testing functions --------------------------------------------------------------------
 
 
     # need to update for hi-lo betting 

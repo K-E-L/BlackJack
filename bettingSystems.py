@@ -1,5 +1,3 @@
-import sys
-
 class BettingSystem:
     def __init__(self):
         self.running_count = 0
@@ -8,13 +6,11 @@ class BettingSystem:
         self.true_count = 0
         self.min_true_count = 0
         self.max_true_count = 0
+        self.total_true_count = 0
 
         # max experimental true count
         self.exp_max_true_count = 35
-
-        # 
         
-        self.total_true_count = 0
 
     def updateMinMaxRunningCount(self):
         if self.running_count > self.max_running_count:
@@ -43,7 +39,6 @@ class BettingSystem:
     def getTrueCount(self):
         return self.true_count
     
-
 class HiLo(BettingSystem):
     def updateRunningCount(self, pCards):
         card = pCards[len(pCards) - 1]
@@ -65,3 +60,37 @@ class WongHalves(BettingSystem):
             self.running_count += 1
         elif card.value == 5:
             self.running_count += 1.5
+
+class UstonSS(BettingSystem):
+    def updateRunningCount(self, pCards):
+        card = pCards[len(pCards) - 1]
+        if card.value >= 2 and card.value <= 4:
+            self.running_count += 2
+        elif card.value == 6: 
+            self.running_count += 2
+        elif card.value == 5: 
+            self.running_count += 3
+        elif card.value == 7: 
+            self.running_count += 1
+        elif card.value == 9:
+            self.running_count += -1
+        elif card.value == 10 or card.value == 1:
+            self.running_count += -2
+
+class RevereAPC(BettingSystem):
+    def updateRunningCount(self, pCards):
+        card = pCards[len(pCards) - 1]
+        if card.value == 2 or card.value == 7:
+            self.running_count += 2
+        elif card.value == 3 or card.value == 4 or card.value == 6:
+            self.running_count += 3
+        elif card.value == 5:
+            self.running_count += 4
+        elif card.value == 9:
+            self.running_count -= 1
+        elif card.value == 10:
+            self.running_count -= 3
+        elif card.value == 1:
+            self.running_count -= 4
+
+
