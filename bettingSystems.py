@@ -9,8 +9,7 @@ class BettingSystem:
         self.total_true_count = 0
 
         # max experimental true count
-        self.exp_max_true_count = 35
-        
+        self.exp_max_true_count = 30
 
     def updateMinMaxRunningCount(self):
         if self.running_count > self.max_running_count:
@@ -30,67 +29,66 @@ class BettingSystem:
     def updateTotalTrueCount(self):
         self.total_true_count += self.true_count
 
-    def setExpMaxTrueCount(self, pExpMaxTrueCount):
-        self.exp_max_true_count = 35
-
     def getExpMaxTrueCount(self):
         return self.exp_max_true_count
 
     def getTrueCount(self):
         return self.true_count
-    
-class HiLo(BettingSystem):
+
     def updateRunningCount(self, pCards):
         card = pCards[len(pCards) - 1]
-        if card.value >= 2 and card.value <= 6:
-            self.running_count += 1
-        elif card.value == 10 or card.value == 1:
-            self.running_count -= 1
+        self.running_count += self.count_table[card.value - 1]
+
+        
+class HiLo(BettingSystem):
+    def __init__(self):
+        BettingSystem.__init__(self)
+        self.name = "Hi Lo"
+        # for values       [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        self.count_table = [-1, 1, 1, 1, 1, 1, 0, 0, 0, -1]
 
 class WongHalves(BettingSystem):
-    def updateRunningCount(self, pCards):
-        card = pCards[len(pCards) - 1]
-        if card.value == 1 or card.value == 10:
-            self.running_count -= 1
-        elif card.value == 9:
-            self.running_count -= .5
-        elif card.value == 2 or card.value == 7:
-            self.running_count += .5
-        elif card.value == 3 or card.value == 4 or card.value == 6:
-            self.running_count += 1
-        elif card.value == 5:
-            self.running_count += 1.5
+    def __init__(self):
+        BettingSystem.__init__(self)
+        self.name = "Wong Halves"
+        # for values       [ 1,  2,  3,  4,   5,  6,  7,  8,   9,  10]
+        self.count_table = [-1, .5,  1,  1, 1.5,  1, .5,  0, -.5, -1]
 
 class UstonSS(BettingSystem):
-    def updateRunningCount(self, pCards):
-        card = pCards[len(pCards) - 1]
-        if card.value >= 2 and card.value <= 4:
-            self.running_count += 2
-        elif card.value == 6: 
-            self.running_count += 2
-        elif card.value == 5: 
-            self.running_count += 3
-        elif card.value == 7: 
-            self.running_count += 1
-        elif card.value == 9:
-            self.running_count += -1
-        elif card.value == 10 or card.value == 1:
-            self.running_count += -2
+    def __init__(self):
+        BettingSystem.__init__(self)
+        self.name = "Uston SS"
+        # for values       [ 1, 2, 3, 4, 5, 6, 7, 8,  9, 10]
+        self.count_table = [-2, 2, 2, 2, 3, 2, 1, 0, -1, -2]
 
 class RevereAPC(BettingSystem):
-    def updateRunningCount(self, pCards):
-        card = pCards[len(pCards) - 1]
-        if card.value == 2 or card.value == 7:
-            self.running_count += 2
-        elif card.value == 3 or card.value == 4 or card.value == 6:
-            self.running_count += 3
-        elif card.value == 5:
-            self.running_count += 4
-        elif card.value == 9:
-            self.running_count -= 1
-        elif card.value == 10:
-            self.running_count -= 3
-        elif card.value == 1:
-            self.running_count -= 4
+    def __init__(self):
+        BettingSystem.__init__(self)
+        self.name = "Revere APC"
+        # for values       [ 1, 2, 3, 4, 5, 6, 7, 8,  9, 10]
+        self.count_table = [-4, 2, 3, 3, 4, 3, 2, 0, -1, -3]
+        
+class UstonAPC(BettingSystem):
+    def __init__(self):
+        BettingSystem.__init__(self)
+        self.name = "Uston APC"
+        # for values       [1, 2, 3, 4, 5, 6, 7, 8,  9, 10]
+        self.count_table = [0, 1, 2, 2, 3, 2, 2, 1, -1, -3]
 
+class VictorAPC(BettingSystem):
+    def __init__(self):
+        BettingSystem.__init__(self)
+        self.name = "Victor APC"
+        # for values       [1, 2, 3, 4, 5, 6, 7, 8,  9, 10]
+        self.count_table = [0, 2, 2, 2, 3, 2, 2, 0, -1, -3]
 
+# ------ not included in main -----------------
+        
+class AdvancedOmega2(BettingSystem):
+    def __init__(self):
+        BettingSystem.__init__(self)
+        self.name = "Advanced Omega 2"
+        # for values       [1, 2, 3, 4, 5, 6, 7, 8,  9, 10]
+        self.count_table = [0, 1, 1, 2, 2, 2, 1, 0, -1, -2]
+
+# ---------------------------------------------

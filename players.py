@@ -1,7 +1,7 @@
 from cards import *
 
 class Player:
-    def __init__(self, pName):
+    def __init__(self, pName, pSpread, pBetDuringNegativeCount):
         self.name = pName
         self.hand = []
         self.value = 0
@@ -12,20 +12,13 @@ class Player:
         self.total_bet = 0
 
         # spread of 50
-        self.spread = 50
+        self.spread = pSpread
 
-        # Wong Halves
-        # .01127  .02239 .04344  .0518
-
-        # Uston SS
-        # .01386  .03148 .03676  .0332
-
-        # Revere APC
-        # .01733  .03345 .04276  .0445
-        
-        
         # betting 0 during a negative count
-        self.bet_during_negative_count = 0
+        self.bet_during_negative_count = pBetDuringNegativeCount
+
+        # difference from true count -1
+        self.diff_from_true_count = -1
 
     def checkSoftValue(self):
         self.value = 0
@@ -93,15 +86,14 @@ class Player:
         # bet / (experimental max bet) == spread bet / (max spread value)
         # spread bet == (max spread value) * bet / (experimental max bet)
 
-        pShoe.system.setExpMaxTrueCount(35)
         self.bet = round((self.spread * self.bet) / pShoe.system.getExpMaxTrueCount())
 
         if self.bet <= 0:
             self.bet = 1
 
     # from WIRED https://www.youtube.com/watch?v=G_So72lFNIU
-    def systemBet(self, pShoe):
-        self.bet = pShoe.system.getTrueCount() - 1
+    def systemBet(self, pShoe, pDiffFromTrueCount):
+        self.bet = pShoe.system.getTrueCount() + pDiffFromTrueCount
         
         if self.bet < 0:
             self.bet = self.bet_during_negative_count
@@ -113,7 +105,7 @@ class Player:
         print(self.name, "System spread bets", self.bet)
         self.updateMaxBet()
         self.updateTotalBet()
-
+        
     def makeDoubleBet(self):
         self.bet *= 2
 

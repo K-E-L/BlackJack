@@ -1,0 +1,67 @@
+decks, spread, bet negative
+system, user edge
+    
+2, 20, 0
+Hi Lo       .0442
+Wong Halves .0420
+Victor APC  .0419
+Revere APC  .0368
+Uston APC   .0362
+Uston SS    .0345
+
+2, 20, 1
+Uston SS    .0320
+Revere APC  .0304
+Victor APC  .0285
+Uston APC   .0271
+Hi Lo       .0264
+Wong Halves .0263
+
+2, 50, 0
+Hi Lo       .0477
+Wong Halves .0446
+Uston SS    .0388
+Revere APC  .0365
+Victor APC  .0356
+Uston APC   .0344
+
+2, 50, 1
+Uston SS    .0363
+Hi Lo       .0362
+Revere APC  .0358
+Wong Halves .0339
+Uston APC   .0327
+Victor APC  .0316
+
+    
+6, 20, 0
+Revere APC  .0330
+Wong Halves .0266
+Hi Lo       .0253    
+Uston APC   .0251
+Uston SS    .0202
+Victor APC  .0187
+    
+6, 20, 1
+Revere APC  .0205
+Uston SS    .0203
+Uston APC   .0142
+Victor APC  .0133
+Wong Halves .0115
+Hi Lo       .0114
+
+6, 50, 0
+Wong Halves .0345
+Revere APC  .0292
+Hi Lo       .0234
+Uston APC   .0231
+Victor APC  .0207
+Uston SS    .0206
+    
+6, 50, 1
+Uston SS    .0216
+Wong Halves .02093
+Victor APC  .020922
+Revere APC  .020919  
+Uston APC   .0195
+Hi Lo       .0188

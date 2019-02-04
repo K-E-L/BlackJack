@@ -12,26 +12,40 @@ class Card:
         print(self.deck, self.suite, self.name, self.value)
 
 class Shoe:    
-    def __init__(self):
+    def __init__(self, pSystem, pDeckCount, pCardsCut):
         self.cards = []
 
         # self.deck_count = int(input("Enter how many decks are in the shoe: "))
-        # playing with a 6 deck shoe
-        # self.deck_count = 6
-        self.deck_count = 2
+        # playing with a 2 deck shoe
+        self.deck_count = pDeckCount
         
-        # cut one deck out
-        # self.cards_cut = 52
-        self.cards_cut = 15
+        # cut 15 deck out
+        self.cards_cut = pCardsCut
+
+        # betting system
+        if pSystem == "Hi Lo":
+            self.system = HiLo()
+        elif pSystem == "Wong Halves":
+            self.system = WongHalves()
+        elif pSystem == "Uston SS":
+            self.system = UstonSS()
+        elif pSystem == "Revere APC":
+            self.system = RevereAPC()
+        elif pSystem == "Uston APC":
+            self.system = UstonAPC()
+        elif pSystem == "Victor APC":
+            self.system = VictorAPC()
+
+        # ------ not included in main -----------------
+        
+        elif pSystem == "Advanced Omega 2":
+            self.system = AdvancedOmega2()
+
+        # ---------------------------------------------
 
         # deck estimation of .5 means round to half deck, 0 means don't round
         self.deck_estimation = 0
 
-        # betting system
-        # self.system = HiLo()
-        # self.system = WongHalves()
-        self.system = UstonSS()
-        # self.system = RevereAPC()
         
         self.setShoe()
         self.shuffleCards()

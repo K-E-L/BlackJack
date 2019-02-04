@@ -4,10 +4,10 @@ from basic import *
 from testBasic import *
 
 class Game:
-    def __init__(self):
-        self.shoe = Shoe()
-        self.dealer = Player('dealer')
-        self.user = Player('user')
+    def __init__(self, pSystem, pDeckCount, pCardsCut, pSpread, pBetDuringNegativeCount):
+        self.shoe = Shoe(pSystem, pDeckCount, pCardsCut)
+        self.dealer = Player('dealer', pSpread, pBetDuringNegativeCount)
+        self.user = Player('user', pSpread, pBetDuringNegativeCount)
 
         self.dealer_wins = 0
         self.user_wins = 0
@@ -18,6 +18,7 @@ class Game:
         self.games_left = 0
         self.black_jacks = 0
         self.surrenders = 0
+
 
     def checkNondependent(self, pChoice):
         if pChoice == 'Bj':
@@ -92,7 +93,7 @@ class Game:
             
             # bet here
             # self.user.startBet(1)
-            self.user.systemBet(self.shoe)
+            self.user.systemBet(self.shoe, self.user.diff_from_true_count)
 
             # max true count (6 deck shoe, 1 deck cut)  --  31 32 29 30 33 34 33 35 36 36
             
@@ -161,6 +162,7 @@ class Game:
         print('cards cut:', self.shoe.cards_cut)
         print('spread:', self.user.spread)
         print('bet negative:', self.user.bet_during_negative_count)
+        print('system:', self.shoe.system.name)
         print('games:', self.games_init)
         print('blackjacks:', self.black_jacks)
         print('surrenders:', self.surrenders)
@@ -177,6 +179,15 @@ class Game:
         if self.user.total_bet != 0:
             print('average user edge', ((self.user.winnings / self.games_init) / (self.user.total_bet / self.games_init)))
         print('**********************************************************')
+
+    def fileStats(self):
+        f = open("output.txt", "a")
+        f.write('system: ' + str(self.shoe.system.name) + '\n')
+        f.write('decks: ' + str(self.shoe.deck_count) + '\n')
+        f.write('spread: ' + str(self.user.spread) + '\n')
+        f.write('bet negative: ' + str(self.user.bet_during_negative_count) + '\n')
+        f.write('average user edge: ' + str((self.user.winnings / self.games_init) / (self.user.total_bet / self.games_init)) + '\n')
+
 
         
 # -------- testing functions --------------------------------------------------------------------

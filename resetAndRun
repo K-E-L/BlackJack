@@ -1,0 +1,4 @@
+rm output.txt
+touch output.txt
+python3 main.py
+cat output.txt

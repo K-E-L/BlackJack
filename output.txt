@@ -1,0 +1,30 @@
+system: Hi Lo
+decks: 2
+spread: 50
+bet negative: 1
+average user edge: 0.0362190678381199
+system: Wong Halves
+decks: 2
+spread: 50
+bet negative: 1
+average user edge: 0.03390800661428725
+system: Uston SS
+decks: 2
+spread: 50
+bet negative: 1
+average user edge: 0.03628997303222329
+system: Revere APC
+decks: 2
+spread: 50
+bet negative: 1
+average user edge: 0.03581667702109083
+system: Uston APC
+decks: 2
+spread: 50
+bet negative: 1
+average user edge: 0.032717869682084955
+system: Victor APC
+decks: 2
+spread: 50
+bet negative: 1
+average user edge: 0.03156666633382141
