@@ -7,11 +7,12 @@ def main():
     # game.testPlayOne()
     # game.testBasic()
 
-    systems = ["Hi Lo", "Wong Halves", "Uston SS", "Revere APC", "Uston APC", "Victor APC"]
+#    systems = ["Hi Lo", "Wong Halves", "Uston SS", "Revere APC", "Uston APC", "Victor APC"]
+    systems = ["Hi Lo"]
 
     # play one game for each system and append to file
     for system in systems:
-        game = Game(system, 2, 15, 50, 1)
+        game = Game(pSystem=system, pDeckCount=2, pCardsCut=15, pSpread=20, pBetDuringNegativeCount=1)
         game.play()
         game.printStats()
         game.fileStats()

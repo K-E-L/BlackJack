@@ -45,7 +45,7 @@ def checkSoft(pUser, pDealer):
     if pUser.value >= 19:
         return 'S'
     elif pUser.value == 18:
-        if pDealer.hand[0].value == 2 or pDealer.hand[0].value ==  7 or pDealer.hand[0].value == 8:
+        if pDealer.hand[0].value == 2 or pDealer.hand[0].value == 7 or pDealer.hand[0].value == 8:
             return 'S'
         elif pDealer.hand[0].value >= 9:
             return 'H'

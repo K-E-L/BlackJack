@@ -1,4 +1,7 @@
 from cards import *
+from sklearn import svm
+import numpy as np
+from numpy import genfromtxt
 
 class Player:
     def __init__(self, pName, pSpread, pBetDuringNegativeCount):
@@ -10,6 +13,8 @@ class Player:
         self.bet = 0
         self.max_bet = 0
         self.total_bet = 0
+        self.max_win = 0
+        self.max_loss = 0
 
         # spread of 50
         self.spread = pSpread
@@ -59,6 +64,7 @@ class Player:
         print(self.name, "value:", self.value_type, self.value)
 
     def printDealerUp(self):
+        print('Dealer up card:')
         self.hand[0].printCard()
         print('---------------')
         
@@ -105,7 +111,7 @@ class Player:
         print(self.name, "System spread bets", self.bet)
         self.updateMaxBet()
         self.updateTotalBet()
-        
+
     def makeDoubleBet(self):
         self.bet *= 2
 
@@ -119,3 +125,40 @@ class Player:
         
     def resetBet(self):
         self.bet = 0
+
+    def updateMaxWin(self, pWin):
+        if pWin > self.max_win:
+            self.max_win = pWin
+
+    def updateMaxLoss(self, pLoss):
+        if pLoss > self.max_loss:
+            self.max_loss = pLoss
+
+    def learningBet(self, pX, pShoe):
+        # for SVC when it predicts a 0 or a 1
+        self.bet = pShoe.model.predict(pX)  + 1
+
+        # for SVR that predicts from about -.5 to 1.5
+        # self.bet = pShoe.model.predict(pX)
+
+        # if self.bet < 0:
+        #     self.bet = self.bet_during_negative_count
+        # else:
+        #     # 1 for now, 1.5 later?
+        #     self.bet = round((self.spread * self.bet) / 1.5)
+            
+        #     if self.bet <= 0:
+        #         self.bet = 1
+
+        #     if self.bet > self.spread:
+        #         self.bet = self.spread
+
+                
+        print(self.name, "learning model bets", self.bet)
+        self.updateMaxBet()
+        self.updateTotalBet()
+        
+
+
+
+        

@@ -14,11 +14,10 @@ class Game:
 
         # self.games_init = int(input("Enter how many games to play: "))
         # currently 1000000 games per ~53 sec. on razer 15
-        self.games_init = 1000000
+        self.games_init = 10000
         self.games_left = 0
         self.black_jacks = 0
         self.surrenders = 0
-
 
     def checkNondependent(self, pChoice):
         if pChoice == 'Bj':
@@ -27,8 +26,11 @@ class Game:
             self.dealer.loses(1.5 * self.user.bet)
             self.user.wins(1.5 * self.user.bet)
             self.user_wins += 1
+            self.user.updateMaxWin(1.5 * self.user.bet)
             self.black_jacks += 1
-
+            
+            self.shoe.updateShoeData(result=1)
+            
             return 1
         if pChoice == 'Su':
             print("user surrenders")
@@ -36,12 +38,16 @@ class Game:
             self.user.loses(.5 * self.user.bet)
             self.dealer_wins += 1
             self.surrenders += 1
+            self.user.updateMaxLoss(.5 * self.user.bet)
+            self.shoe.updateShoeData(result=0)
             return 1
         if pChoice == 'Bu':
             print("user busted, dealer won")
             self.dealer.wins(self.user.bet)
             self.user.loses(self.user.bet)
-            self.dealer_wins += 1
+            self.dealer_wins += 1            
+            self.user.updateMaxLoss(self.user.bet)
+            self.shoe.updateShoeData(result=0)
             return 1
         else:
             return 0
@@ -59,12 +65,17 @@ class Game:
                 self.dealer.loses(self.user.bet)
                 self.user.wins(self.user.bet)
                 self.user_wins += 1
+                self.user.updateMaxWin(self.user.bet)
+                self.shoe.updateShoeData(result=1)
 
             elif self.user.value < self.dealer.value:
                 print("user doubles, and loses")
                 self.dealer.wins(self.user.bet)
                 self.user.loses(self.user.bet)
                 self.dealer_wins += 1
+                self.user.updateMaxLoss(self.user.bet)
+                self.shoe.updateShoeData(result=0)
+                
             elif self.user.value == self.dealer.value:
                 print("user doubles, and pushes")
 
@@ -75,12 +86,16 @@ class Game:
                 self.dealer.loses(self.user.bet)
                 self.user.wins(self.user.bet)
                 self.user_wins += 1
+                self.user.updateMaxWin(self.user.bet)
+                self.shoe.updateShoeData(result=1)
 
             elif self.user.value < self.dealer.value:
                 print("user stands, and loses")
                 self.dealer.wins(self.user.bet)
                 self.user.loses(self.user.bet)
                 self.dealer_wins += 1
+                self.user.updateMaxLoss(self.user.bet)
+                self.shoe.updateShoeData(result=0)
             elif self.user.value == self.dealer.value:
                 print("user stands, and pushes")
 
@@ -93,19 +108,12 @@ class Game:
             
             # bet here
             # self.user.startBet(1)
-            self.user.systemBet(self.shoe, self.user.diff_from_true_count)
-
-            # max true count (6 deck shoe, 1 deck cut)  --  31 32 29 30 33 34 33 35 36 36
             
-            # (6 deck shoe, 1 deck cut, spread of 50)
-            # average bet      -- 1.63    - Hi-Lo: by simply adding 0 to the bet
-            # average winnings -- .0417   - mapping to spread 1-50 
-            # average edge     -- .0253   - setting the max at 50
-
-
-            # .025985 deck estimation 0
+            # self.user.systemBet(self.shoe, self.user.diff_from_true_count)
             
-            
+            self.user.learningBet(self.shoe.getCardAmountsArray(), self.shoe)
+            # val = input()
+
             # deal hands out
             self.dealer.dealHand(self.shoe.dealCard(), self.shoe.dealCard())
             if (self.dealer.hand[0].value == 11 and self.dealer.hand[1].value == 10) or (self.dealer.hand[0].value == 10 and self.dealer.hand[1].value == 11):
@@ -114,7 +122,9 @@ class Game:
                 self.dealer.printHand()
                 self.dealer.wins(self.user.bet)
                 self.user.loses(self.user.bet)
-                self.user_wins -= 1
+                
+                self.dealer_wins += 1
+                self.shoe.updateShoeData(result=0)
             
             else:
                 self.user.dealHand(self.shoe.dealCard(), self.shoe.dealCard())
@@ -176,6 +186,8 @@ class Game:
         print('average true count:', self.shoe.system.total_true_count / self.games_init)
         print('highest betting unit:', self.user.max_bet)
         print('average bet:', self.user.total_bet / self.games_init)
+        print('max win', self.user.max_win)
+        print('max loss', self.user.max_loss)
         if self.user.total_bet != 0:
             print('average user edge', ((self.user.winnings / self.games_init) / (self.user.total_bet / self.games_init)))
         print('**********************************************************')

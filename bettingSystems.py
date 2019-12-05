@@ -39,7 +39,7 @@ class BettingSystem:
         card = pCards[len(pCards) - 1]
         self.running_count += self.count_table[card.value - 1]
 
-        
+
 class HiLo(BettingSystem):
     def __init__(self):
         BettingSystem.__init__(self)

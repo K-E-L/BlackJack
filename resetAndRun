@@ -1,4 +1,6 @@
 rm output.txt
 touch output.txt
+rm shoeData.csv
+touch shoeData.csv
 python3 main.py
 cat output.txt

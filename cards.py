@@ -1,5 +1,6 @@
 import random
 from bettingSystems import *
+from learningModels import *
 
 class Card:
     def __init__(self, deck, suite, name, value):
@@ -14,6 +15,9 @@ class Card:
 class Shoe:    
     def __init__(self, pSystem, pDeckCount, pCardsCut):
         self.cards = []
+
+        # for example, a full 2 deck shoe would be [2:8, 3:8, 4:8, 5:8, 6:8, 7:8, 8:8, 9:8, 10:32, 1:8]
+        self.card_amounts = {2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 1:0}
 
         # self.deck_count = int(input("Enter how many decks are in the shoe: "))
         # playing with a 2 deck shoe
@@ -35,7 +39,7 @@ class Shoe:
             self.system = UstonAPC()
         elif pSystem == "Victor APC":
             self.system = VictorAPC()
-
+            
         # ------ not included in main -----------------
         
         elif pSystem == "Advanced Omega 2":
@@ -43,10 +47,11 @@ class Shoe:
 
         # ---------------------------------------------
 
+        self.model = LearningModel()
+
         # deck estimation of .5 means round to half deck, 0 means don't round
         self.deck_estimation = 0
 
-        
         self.setShoe()
         self.shuffleCards()
 
@@ -129,6 +134,7 @@ class Shoe:
         if len(self.cards) <= self.cards_cut:
             print("Shoe is less than or equal to cut.. creating and shuffling new shoe")
             # print("running count----------------", self.system.running_count)
+            self.cards.clear()
             self.setShoe()
             self.shuffleCards()
             self.system.running_count = 0
@@ -137,3 +143,25 @@ class Shoe:
             # print("cards left:", len(self.cards))
             pass
 
+
+    def updateCardAmounts(self):
+        for card in self.cards:
+            self.card_amounts[card.value] += 1
+
+    def updateShoeData(self, result):
+        f = open("shoeData.csv", "a")
+        
+        self.updateCardAmounts()
+        for value in self.card_amounts.values():
+            f.write(str(value) + ",")
+
+        f.write(str(result) + "\n")
+        for i in range(1,11):
+            self.card_amounts[i] = 0
+
+        f.close()
+
+    def getCardAmountsArray(self):
+        self.updateCardAmounts()
+        print(self.card_amounts.values())
+        return list(self.card_amounts.values())
