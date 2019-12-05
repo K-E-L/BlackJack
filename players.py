@@ -135,30 +135,40 @@ class Player:
             self.max_loss = pLoss
 
     def learningBet(self, pX, pShoe):
-        # for SVC when it predicts a 0 or a 1
-        self.bet = pShoe.model.predict(pX)  + 1
+        f = open("modelPredict.csv", "a+")
 
+        # # for SVC when it predicts a 0 or a 1
+        # self.bet = pShoe.model.predict(pX) + 1
+
+
+        
         # for SVR that predicts from about -.5 to 1.5
-        # self.bet = pShoe.model.predict(pX)
+        self.bet = pShoe.model.predict(pX)
 
-        # if self.bet < 0:
-        #     self.bet = self.bet_during_negative_count
-        # else:
-        #     # 1 for now, 1.5 later?
-        #     self.bet = round((self.spread * self.bet) / 1.5)
+        if self.bet < 0:
+            self.bet = self.bet_during_negative_count
+        else:
+            # 1 for now, 1.5 later?
+            self.bet = round((self.spread * self.bet) / 1.5)
             
-        #     if self.bet <= 0:
-        #         self.bet = 1
+            if self.bet <= 0:
+                self.bet = 1
 
-        #     if self.bet > self.spread:
-        #         self.bet = self.spread
+            if self.bet > self.spread:
+                self.bet = self.spread
 
+
+
+
+        for value in pShoe.card_amounts.values():
+            f.write(str(value) + ",")
+
+        f.write(str(pShoe.model.predict(pX)) + "\n")
                 
         print(self.name, "learning model bets", self.bet)
         self.updateMaxBet()
         self.updateTotalBet()
-        
 
 
-
+        f.close()
         

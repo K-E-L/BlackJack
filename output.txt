@@ -2,4 +2,4 @@ system: Hi Lo
 decks: 2
 spread: 20
 bet negative: 1
-average user edge: 0.008098591549295774
+average user edge: 0.038729722894613246

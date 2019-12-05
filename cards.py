@@ -145,19 +145,19 @@ class Shoe:
 
 
     def updateCardAmounts(self):
+        for i in range(1,11):
+            self.card_amounts[i] = 0
+
         for card in self.cards:
             self.card_amounts[card.value] += 1
 
     def updateShoeData(self, result):
         f = open("shoeData.csv", "a")
-        
-        self.updateCardAmounts()
-        for value in self.card_amounts.values():
-            f.write(str(value) + ",")
 
-        f.write(str(result) + "\n")
-        for i in range(1,11):
-            self.card_amounts[i] = 0
+        # for value in self.card_amounts.values():
+        #     f.write(str(value) + ",")
+
+        f.write(str(result) + ",")
 
         f.close()
 

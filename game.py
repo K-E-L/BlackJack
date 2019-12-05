@@ -28,10 +28,10 @@ class Game:
             self.user_wins += 1
             self.user.updateMaxWin(1.5 * self.user.bet)
             self.black_jacks += 1
-            
-            self.shoe.updateShoeData(result=1)
-            
+            self.shoe.updateShoeData(result=(1.5 * self.user.bet))
+            # self.shoe.updateShoeData(result=1)
             return 1
+        
         if pChoice == 'Su':
             print("user surrenders")
             self.dealer.wins(.5 * self.user.bet)
@@ -39,16 +39,20 @@ class Game:
             self.dealer_wins += 1
             self.surrenders += 1
             self.user.updateMaxLoss(.5 * self.user.bet)
-            self.shoe.updateShoeData(result=0)
+            self.shoe.updateShoeData(result=-(.5 * self.user.bet))
+            # self.shoe.updateShoeData(result=0)
             return 1
+
         if pChoice == 'Bu':
             print("user busted, dealer won")
             self.dealer.wins(self.user.bet)
             self.user.loses(self.user.bet)
             self.dealer_wins += 1            
             self.user.updateMaxLoss(self.user.bet)
-            self.shoe.updateShoeData(result=0)
+            self.shoe.updateShoeData(result=-(self.user.bet))
+            # self.shoe.updateShoeData(result=0)
             return 1
+        
         else:
             return 0
 
@@ -66,7 +70,8 @@ class Game:
                 self.user.wins(self.user.bet)
                 self.user_wins += 1
                 self.user.updateMaxWin(self.user.bet)
-                self.shoe.updateShoeData(result=1)
+                self.shoe.updateShoeData(result=self.user.bet)
+                # self.shoe.updateShoeData(result=1)
 
             elif self.user.value < self.dealer.value:
                 print("user doubles, and loses")
@@ -74,7 +79,8 @@ class Game:
                 self.user.loses(self.user.bet)
                 self.dealer_wins += 1
                 self.user.updateMaxLoss(self.user.bet)
-                self.shoe.updateShoeData(result=0)
+                self.shoe.updateShoeData(result=-(self.user.bet))
+                # self.shoe.updateShoeData(result=0)
                 
             elif self.user.value == self.dealer.value:
                 print("user doubles, and pushes")
@@ -87,7 +93,8 @@ class Game:
                 self.user.wins(self.user.bet)
                 self.user_wins += 1
                 self.user.updateMaxWin(self.user.bet)
-                self.shoe.updateShoeData(result=1)
+                self.shoe.updateShoeData(result=self.user.bet)
+                # self.shoe.updateShoeData(result=1)
 
             elif self.user.value < self.dealer.value:
                 print("user stands, and loses")
@@ -95,9 +102,13 @@ class Game:
                 self.user.loses(self.user.bet)
                 self.dealer_wins += 1
                 self.user.updateMaxLoss(self.user.bet)
-                self.shoe.updateShoeData(result=0)
+                self.shoe.updateShoeData(result=-(self.user.bet))
+                # self.shoe.updateShoeData(result=0)
+                
             elif self.user.value == self.dealer.value:
                 print("user stands, and pushes")
+                # treat a push as a loss for now 
+                self.shoe.updateShoeData(result=0)
 
                 
     def play(self):        
@@ -112,6 +123,18 @@ class Game:
             # self.user.systemBet(self.shoe, self.user.diff_from_true_count)
             
             self.user.learningBet(self.shoe.getCardAmountsArray(), self.shoe)
+            
+            self.shoe.updateCardAmounts()
+            
+            
+            # 100000 tries
+            # bet 1:         .005  .002  .003        .003
+            # learning SVR:  .008  .007  .010        .008
+            # learning SVC:  .012  .005  .008        .008
+            # system Hi Lo:  .027  .028  .028        .028
+
+
+            
             # val = input()
 
             # deal hands out
@@ -124,7 +147,8 @@ class Game:
                 self.user.loses(self.user.bet)
                 
                 self.dealer_wins += 1
-                self.shoe.updateShoeData(result=0)
+                self.shoe.updateShoeData(result=-(self.user.bet))
+                # self.shoe.updateShoeData(result=0)
             
             else:
                 self.user.dealHand(self.shoe.dealCard(), self.shoe.dealCard())
@@ -192,6 +216,15 @@ class Game:
             print('average user edge', ((self.user.winnings / self.games_init) / (self.user.total_bet / self.games_init)))
         print('**********************************************************')
 
+        # self.shoe.model.test()
+        # not too accurate for SVC
+        # i at 13: .54
+        # i at 82: .57
+        # i at 112: .53
+        # i at 27: .67
+        # i at 51: .59
+        
+        
     def fileStats(self):
         f = open("output.txt", "a")
         f.write('system: ' + str(self.shoe.system.name) + '\n')
